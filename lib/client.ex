@@ -74,10 +74,18 @@ defmodule Mailgun.Client do
     request(:post, url("/messages", conf[:domain]), "api", conf[:key], headers, ctype, body)
   end
   def log_email(conf, email) do
-    json = email
-    |> Enum.into(%{})
-    |> Poison.encode!
-    File.write(conf[:test_file_path], json)
+    case File.read(conf[:test_file_path]) do
+      {:ok, log} ->
+        log  = Poison.decode!(log)
+        json = Enum.into(email, %{})
+        log  = Poison.encode! [json|log]
+        File.write(conf[:test_file_path], log)
+
+      {:error, _} ->
+        json = email
+        |> Enum.into(%{})
+        File.write(conf[:test_file_path], Poison.encode! [json])
+    end
   end
 
   defp format_multipart_formdata(boundary, fields, files) do

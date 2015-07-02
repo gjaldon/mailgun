@@ -68,7 +68,7 @@ defmodule MailgunTest do
       text: "How goes it?"
 
     file_contents = File.read!(file_path)
-    assert file_contents == "{\"to\":\"foo@bar.test\",\"text\":\"How goes it?\",\"subject\":\"hello!\",\"from\":\"foo@bar.test\"}"
+    assert file_contents == "[{\"to\":\"foo@bar.test\",\"text\":\"How goes it?\",\"subject\":\"hello!\",\"from\":\"foo@bar.test\"}]"
+    File.rm!(file_path)
   end
-
 end
